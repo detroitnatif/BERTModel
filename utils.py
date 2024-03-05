@@ -27,7 +27,7 @@ def prediction_batch(model, dataset, device='cpu', batchsize=32):
             
             logits = res[0].detach().cpu().numpy()
             
-            y_preds = torch.argmax(logits, axis=1)
+            y_preds = np.argmax(logits, axis=1)
             
             all_y_preds.extend(y_preds)
             
