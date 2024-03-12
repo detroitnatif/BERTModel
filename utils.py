@@ -38,3 +38,21 @@ def prediction_batch(model, dataset, device='cpu', batch_size = 32):
     accuracy = metric_accuracy.compute(predictions = all_y_preds, references = dataset['label'])
     
     return accuracy
+
+
+def prediction(model, tokens_tensor, masks_tensors , id2label_str, topk =5):
+    model.eval()
+    
+    tokens_tensor = tokens_tensor.to('cpu')
+    masks_tensors = masks_tensors.to('cpu')
+    
+    res = model(tokens_tensor, masks_tensors)
+
+    ps = torch.nn.functional.softmax(res[0], dim=1)
+    probs, classes = torch.topk(ps, topk, dim=1)
+    probs = probs.tolist()
+    classes = classes.tolist()
+    print(classes)
+    labels = map_class_to_label(probs, id2label_str, classes)
+   
+    return labels
